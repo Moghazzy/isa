@@ -1,0 +1,1052 @@
+;Write a program that adds 5 bytes of data and saves the result. The data should be the
+;following hex numbers: 25, 12, 15, 1F, 2B.
+
+.MODEL SMALL
+.STACK 64
+.DATA
+
+DATA_IN DB 25H, 12H, 15H, 1FH, 2BH 
+SUM DB ? 
+
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+MOV CX, 05 
+MOV BX, OFFSET DATA_IN 
+MOV AL, 0
+
+AGAIN: ADD AL, [BX] 
+INC BX 
+DEC CX 
+JNZ AGAIN 
+MOV SUM, AL 
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN   
+
+;===============================================================
+
+
+;Write a program that adds 4 words of data and saves the result. The values will be 234DH,
+;1DE6H, 3BC7H, and 566AH. 
+
+.MODEL SMALL
+.STACK 64
+.DATA
+
+DATA_IN DW 234DH, 1DE6H, 3BC7H, 566AH
+SUM DW ?
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+MOV CX, 04
+MOV BX, OFFSET DATA_IN
+MOV AX, 0
+AGAIN: ADD AX, [BX]
+
+INC BX ;or ADD BX,2
+INC BX
+DEC CX
+JNZ AGAIN
+MOV SUM, AX
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN 
+
+;===============================================================
+
+;=================msh fahmah====================================
+ 
+;Write a program that transfers 6 bytes of data from memory locations with offset 0010H to
+;memory locations with offset 0028H
+
+.MODEL SMALL
+.STACK 64
+.DATA
+ORG 0010H
+
+DATA_IN DB 25H, 4FH, 85H, 1FH, 2BH, 0C4H
+
+ORG 0028H
+COPY DB 6 DUP(?)
+
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+MOV CX, 06
+MOV SI, OFFSET DATA_IN
+MOV DI, OFFSET COPY
+AGAIN: MOV AL, [SI]
+MOV [DI], AL
+INC SI
+INC DI
+DEC CX
+JNZ AGAIN
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN  
+
+;=================================================================
+
+
+;Write an assembly program that adds 2 arrays of 4 bytes and saves the result in a third array in
+;the following manner. al awlany + al 25er w keda
+
+.MODEL SMALL
+.STACK 64
+.DATA
+
+Arr1 DB 25H, 4FH, 85H, 1FH
+Arr2 DB 2BH, 0C4H, 4FH, 85H
+Res DB 4 DUP(?)
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+MOV CX, 04
+MOV SI, OFFSET Arr1
+MOV BX, OFFSET Arr2 + 3
+MOV DI, OFFSET Res
+MOV AL, 0
+AGAIN: MOV AL, [SI]
+ADD AL, [BX]
+MOV [DI], AL
+INC SI
+DEC BX
+INC DI
+DEC CX
+JNZ AGAIN
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN
+
+
+;================================================================    
+
+;Write an assembly program that adds 2 arrays of 4 words and saves the result in a third array in
+;the following manner. al awlany + al 25er w keda
+
+
+.MODEL SMALL
+.STACK 64
+.DATA
+
+Arr1 DW 2512H, 4F34H, 8556H, 1F78H
+Arr2 DW 2B12H, 0C434H, 4F56H, 8578H
+Res DW 4 DUP(?)
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+MOV CX, 04
+MOV SI, OFFSET Arr1
+MOV BX, OFFSET Arr2 + 6
+MOV DI, OFFSET Res
+MOV AX, 0
+
+AGAIN: MOV AX, [SI]
+ADD AX, [BX]
+MOV [DI], AX
+ADD SI, 2
+SUB BX, 2
+ADD DI, 2
+DEC CX
+JNZ AGAIN
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN 
+
+;=================================================================
+
+;Write a program that adds 2 quadwords of data and saves the result. The values are
+;F000548FB996FCE7H and F0003FCD4FA2FB8DH
+                                         
+
+.MODEL SMALL
+.STACK 64
+.DATA
+      
+D1 DW 0B996H, 3CE7H, 548FH, 0F000H
+D2 DW 3B8DH, 4FA2H, 3FCDH, 0F000H
+SUM DB 9 DUP(?)
+
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+CLC
+MOV CX, 04
+MOV SI, OFFSET D1
+MOV BX, OFFSET D2
+MOV DI, OFFSET SUM
+AGAIN: MOV AX, [SI]
+ADC AX, [BX]
+MOV [DI], AX
+INC SI
+INC SI
+INC BX
+INC BX
+INC DI
+INC DI
+LOOP AGAIN
+ADC [DI], 0
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN
+
+
+;=============================================================== 
+
+;Write a program that adds 2 arrays of quadwords and saves the result in a third array. The fist arry
+;has 2 elements all are 1111111111111111H the second has 2 elements all are 2222222222222222
+
+
+.MODEL SMALL
+.STACK 64
+.DATA
+
+Arr1 DW 1111H, 1111H, 1111H, 1111H, 1111H, 1111H, 1111H, 1111H
+Arr2 DW 2222H, 2222H, 2222H, 2222H, 2222H, 2222H, 2222H, 2222H
+SUM DB 18 DUP(0)
+
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+MOV SI, OFFSET Arr1
+MOV BX, OFFSET Arr2
+MOV DI, OFFSET SUM
+MOV DX, 2
+NewQuad: CLC
+
+MOV CX, 04
+SameQuad: MOV AX, [SI]
+ADC AX, [BX]
+MOV [DI], AX
+INC SI
+INC SI
+INC BX
+INC BX
+INC DI
+INC DI
+LOOP SameQuad
+ADC [DI], 0
+INC DI
+DEC DX
+JNZ NewQuad
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN
+
+;===================================================================
+
+;Write a program that subtracts 6EH from 4CH and saves the results.
+
+.MODEL SMALL
+.STACK 64
+.DATA
+D1 DB 4CH
+D2 DB 6EH
+SUM DB ?
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+MOV DH, D1
+SUB DH, D2
+JNC NEXT ; No Carry = +ve sum
+NOT DH ; Carry = -ve sum Change it back
+INC DH ; NEG DH = NOT + INC
+
+NEXT: MOV SUM, DH
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN
+
+;=================================================================
+
+;Write a program that subtracts 412963BH from 62562FAH and saves the results.
+
+.MODEL SMALL
+.STACK 64
+.DATA
+D1 DD 62562FAH
+D2 DD 412963BH
+SUM DD ?
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+MOV AX, WORD PTR D1
+SUB AX, WORD PTR D2
+MOV WORD PTR SUM, AX
+MOV AX, WORD PTR D1 + 2
+SBB AX, WORD PTR D2 + 2
+MOV WORD PTR SUM + 2, AX
+
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN
+
+
+;=================================================================
+
+;subtraction with borrow 62FA - 963B
+
+.MODEL SMALL
+.STACK 64
+.DATA
+D1 DW 62FAH
+D2 DW 963BH
+SUM DW ?
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+MOV AX, D1
+SBB AX, D2
+
+MOV  SUM, AX
+
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN
+
+;================================================================
+
+;Multiplication BYTE X BYTE (FA X 3B)
+
+.MODEL SMALL
+.STACK 64
+.DATA
+D1 DB 0FAH
+D2 DB 3BH
+RES DW ?
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+
+MOV AL, D1
+MOV BL, D2
+MUL BL
+MOV RES,AX 
+
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN
+
+
+;================================================================
+
+;Multiplication WORD X WORD (F12A X 3B13)
+
+.MODEL SMALL
+.STACK 64
+.DATA
+D1 DW 0F12AH
+D2 DW 3B13H
+RES DD ?
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+
+MOV AX, D1
+MUL D2
+MOV RES , AX
+MOV RES+2 , DX 
+
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN  
+
+;=================================================================
+
+;Multiplication WORD X BYTE (0A11A X 0B3)
+
+.MODEL SMALL
+.STACK 64
+.DATA
+D1 DW 0A11AH
+D2 DB 0B3H
+RES DD ?
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+
+MOV AL, D2
+MOV AH,0
+MUL D1
+MOV RES , AX
+MOV RES+2 , DX 
+
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN
+
+
+;=================================================================
+
+;Division WORD / BYTE (288A X 3B)
+
+.MODEL SMALL
+.STACK 64
+.DATA
+D1 DW 288AH
+D2 DB 3BH
+Q DB ?
+R DB ?
+
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+
+MOV AX, D1
+DIV D2
+MOV Q,AL
+MOV R,AH
+
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN   
+
+;=================================================================
+
+;Division Doubleword / Word (225BFA11H X 3B11H)
+
+.MODEL SMALL
+.STACK 64
+.DATA
+D1 DD 225BFA11H
+D2 DW 3B11H
+Q DW ?
+R DW ?
+
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+
+MOV AX, WORD PTR D1 
+MOV DX, WORD PTR D1+2 
+DIV D2
+MOV Q,AX
+MOV R,DX
+
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN 
+
+
+;==================================================================
+
+;Division Byte/Byte (2A X 3B)
+
+.MODEL SMALL
+.STACK 64
+.DATA
+D1 DB 2AH
+D2 DB 3BH
+Q DB ?
+R DB ?
+
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+
+MOV AL,D1
+MOV AH,0 
+DIV D2
+MOV Q ,AL
+MOV R,AH
+
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN
+
+;==================================================================
+
+
+;Division WORD X WORD ( 0B777H X 0F51AH)
+
+.MODEL SMALL
+.STACK 64
+.DATA
+D1 DW 0B777H
+D2 DW 0F51AH
+Q DW ?
+R DW ?
+
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+
+MOV AX,D1
+MOV DX,0 
+DIV D2
+MOV Q ,AX
+MOV R,DX
+
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN
+
+;================================================================= 
+
+;HIGHEST GRADE
+
+.MODEL SMALL
+.STACK 64
+.DATA
+
+;FINDING THE HIGHEST GRADE
+GRADES DB 69, 87, 96, 45, 75
+HIGHEST DB ?
+
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+
+MOV CX, 04     ;COUNTER = 4 BECAUSE I HAVE 4 CMP
+MOV SI, OFFSET GRADES
+MOV AL, [SI]
+INC SI
+
+HERE:  CMP AL, [SI]
+JNC NEXT       ;AL > [SI] (CF = 0)
+MOV AL, [SI]   ;SAVE THE BIGGER VALUE
+
+NEXT:  INC SI
+LOOP HERE
+
+MOV HIGHEST, AL
+
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN 
+
+
+;===================================================================
+
+;LOWEST GRADE
+
+.MODEL SMALL
+.STACK 64
+.DATA
+
+;FINDING THE LOWEST GRADE
+GRADES DB 69, 87, 96, 45, 75
+LOWEST DB ?
+
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+
+MOV CX, 04     ;COUNTER = 4 BECAUSE I HAVE 4 CMP
+MOV SI, OFFSET GRADES
+MOV AL, [SI]
+INC SI
+
+HERE:  CMP AL, [SI]
+JC NEXT       ;AL > [SI] (CF = 0)
+MOV AL, [SI]   ;SAVE THE BIGGER VALUE
+
+NEXT:  INC SI
+LOOP HERE
+
+MOV LOWEST, AL
+
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN   
+
+;=================================================================
+
+;LOGIC (AND,OR,XOR)
+
+.MODEL SMALL
+.STACK 64
+.DATA
+
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+
+MOV AX, 0504H
+OR  AX,0DA68H
+
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN    
+
+;===========================================================
+
+;SHL SHR 
+
+.MODEL SMALL
+.STACK 64
+.DATA
+;SHIFT LEFT
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+
+MOV DH, 6
+MOV CL, 4
+SHL DH, CL
+
+MOV AH,4CH
+INT 21H
+MAIN ENDP
+END MAIN
+
+;====================================================================
+
+
+;ROR RCL ROL RCL
+
+.MODEL SMALL
+.STACK 64
+.DATA
+;ROTATE RIGHT
+
+D1 DB 11101010B
+
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+
+ROR D1, 03
+
+
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN 
+
+;==========================================================================
+
+;Using string instructions, write a program that transfers a block of 20 bytes of data.
+
+ 
+.MODEL SMALL
+.STACK 64
+.DATA
+
+D1 DB 'ABCDEFGHIJKLMNOPQRST'
+D2 DB 20 DUP (?)
+
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+
+MOV ES, AX        ;MOVE TO EXTRA SEGMENT
+CLD               ;DIRECTION FLAG ABC
+MOV SI, OFFSET D1 ;SOURCE
+MOV DI, OFFSET D2 ;DESTINATION
+MOV CX, 20        ;COUNTER
+REP MOVSB         ;REPEAT MOVE STRING BYTE INSTRUCTION
+
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN  
+
+
+;========================================================================    
+
+
+;PARTA: Uses STOSB to store byte AAH in 100 memory locations
+;PARTB: Uses LODSB to test the contents of each location to see if AAH is there.
+; If the test fails, the system should display the message 'bad memory'
+
+
+.MODEL SMALL
+.STACK 64
+.DATA
+
+MESSAGE DB 'BAD MEMORY', '$'
+D2 DB 100 DUP (?)
+
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS,AX
+
+;PART A
+MOV ES, AX         ;EXTRA SEGMENT
+CLD                ;DIRECTION FLAG ABC
+MOV DI, OFFSET D2  ;DESTINATION
+MOV AX, 0AAAAH     ;SOURCE
+MOV CX, 50         ;COUNTER
+REP STOSW          ;REPEAT STORE STRING WORD INSTRUCTION
+
+;PART B
+MOV SI, OFFSET D2
+MOV CX, 100
+
+AGAIN: LODSB             ;INCREMENT OFFSET , LOAD STRING BYTE
+XOR AL, AH        ;AL=AH  -> ZF=1
+JNZ OVER          ;AL!=AH ->ZF=0
+LOOP AGAIN        ;ZF=1
+
+;MUST TO END THE CODE WITHOUT THE MESSAGE
+JMP EXIT          ;UNCONDITIONAL JUMP
+
+OVER: MOV AH, 09H        ;INTERRUPT TO WRITE A MESSAGE ON A SCREEN
+MOV DX, OFFSET MESSAGE
+INT 21H
+
+EXIT: MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN  
+
+
+;==================================================================================     
+
+;Write a program that scans the name 'Mr. Gones' and replaces the
+;'G' with the letter 'J', then displays the corrected name.
+
+.MODEL SMALL
+.STACK 64
+.DATA
+
+D1 DB 'Mr. Gones','$'
+
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+
+MOV ES, AX       ;EXTRA SEGMENT
+CLD              ;DIRECTION ABC
+MOV DI, OFFSET D1
+MOV AL, 'G'      ;THE LETTER TO BE REPLACED
+MOV CX,9         ;LENGTH OF THE STRING
+REPNE SCASB      ;REPEAT NOT EQUAL WHILE SCANNING STRING BYTE
+JNE OVER         ;JUMP IF ZF=0
+
+DEC DI           ;BECAUSE SCASB INCREMENT OFFSET
+MOV [DI],'J'
+
+OVER: MOV DX, OFFSET D1
+MOV AH, 09
+INT 21H
+
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN    
+
+
+;======================================================================================
+
+;;Assuming there is a spelling of “Europe” in an electronic dictionary
+;and a user type in “Euorope”, write a program that compares these
+;two and displays the following message depending on the result:
+
+;If they’re equal, display 'The spelling is correct'
+;If they’re not equal, display 'Wrong spelling'
+
+
+.MODEL SMALL
+.STACK 64
+.DATA
+
+DAT_DICT DB 'Europe'
+DAT_TYP  DB 'Euorope'
+MSG1 DB 'THE SPELLING IS CORRECT','$'
+MSG2 DB 'WRONG SPELLING','$'
+
+.CODE
+MAIN PROC FAR
+MOV AX,@DATA
+MOV DS, AX
+
+MOV ES, AX
+CLD
+MOV SI, OFFSET DAT_DICT
+MOV DI, OFFSET DAT_TYP
+MOV CX, 6          ;CORRECT ONE
+REPE CMPSB         ;REPEAT AS LONG AS EQUAL OR UNTIL CX=0
+JE OVER            ;IF ZF=1 DISPLAY MESG1
+MOV DX, OFFSET MSG2;IF ZF=0 DISPLAY MSG2
+JMP DISPLAY
+
+OVER : MOV DX, OFFSET MSG1
+
+DISPLAY: MOV AH,09
+INT 21H
+
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN   
+
+
+;=======================================================================================
+
+
+;upper to lower
+
+.model small
+.stack 128
+.data
+    string  db 'mY NAME is JOe'
+	          
+    strOut  db 14 dup(?)
+    Count   DW 14    
+.code
+main proc far
+; set segment registers:
+    mov ax, data
+    mov ds, ax
+
+    mov cx,count
+    mov si, offset string
+    mov bx, offset strOut
+loop1: 
+    mov al,[si] 
+    cmp al,'A' 
+    jb  skip 
+    cmp al,'Z'
+    ja  skip
+    Add al,20h ;upper case -> lower case
+skip: 
+    mov [bx],al
+    inc si  
+    inc bx
+    loop loop1
+    mov ax, 4c00h ; exit to operating system.
+    int 21h   
+main endp 
+end main ; set entry point and stop the assembler. 
+
+;==============================================================
+
+;zeros
+
+.model small
+.stack 128
+.data
+    Number  DW 0111000011110000B  
+    output  dw ?
+    Count   DW 16    
+.code
+main proc far
+
+; set segment registers:
+    mov ax, data
+    mov ds, ax
+   
+    mov cx,count
+    mov ax,Number
+    mov dx,0 ;dx is counter of zeros
+loop1: 
+    shr ax,1
+    jc  skip      ;if CF==1 go to skip tag
+    inc dx		  ;cf=0 dx++
+skip: 
+    loop loop1 
+    mov output,dx
+    mov ax, 4c00h ; exit to operating system.
+    int 21h   
+main endp 
+
+end main ;
+        ---------------FACTORIALLL
+        .model small
+        .stack 64
+        .data
+        n dw 5
+        res dw ?
+        .code
+        main proc far 
+            mov ax ,@data
+            mov ds ,ax
+            mov cx , n
+            mov ax ,1
+            again : mul cx
+            loop again
+            mov res ,ax
+            mov ah ,4ch
+            int 21h
+            main endp
+        end main
+ 
+ ----------------------------------------------------------------
+ ------------------assi string---------------------------------
+ .model small
+      .stack 64
+      .data 
+      
+STRING DB 'EADTYadrAASTDR3448Grtaastdfe$'
+MATCH DB 'AAST'
+count DB 0 
+
+      .CODE
+    	MAIN PROC FAR
+    	MOV AX, @DATA
+    	MOV DS, AX
+    	MOV ES, AX 
+    	CLD 
+    
+    	MOV DX, 28   
+    	MOV BX, 0     
+    	MOV AL, 0    
+    
+LP: 
+    	MOV SI, OFFSET STRING
+    	ADD SI, BX
+    	MOV DI, OFFSET MATCH
+    	MOV CX, 4       
+    	REPE CMPSB  
+    	JNE ENDLOOP
+    	INC AL   
+ENDLOOP:   
+       INC BX
+       DEC DX
+       JNZ LP
+       MOV COUNT, AL
+    
+    MOV AH, 4CH
+    INT 21H
+    MAIN ENDP
+END MAIN
+-------------------------------------------------------------------
+-------------average-----------------------------------------------
+.model small
+.stack 64
+.data
+    Count     DW 8  
+    PayChecks DW 2300, 4300, 1200, 3700, 1298, 4323, 5673, 986 
+    ans DW ?
+
+.code
+main proc far
+    mov ax, data
+    mov ds, ax
+    mov cx,count ;cx=8
+    mov si,offset PayChecks 
+    mov bx,0 ; bx= sum of PayChecks   
+loop1:  
+    Add	bx,[si] 
+	inc si
+	inc Si
+    loop loop1
+
+	mov ax,bx  ;ax = sum of PayChecks  
+	mov dx,0   ;dx = 0
+	mov cx,count  ;cx = 8
+	Div cx      ;ax/cx = ax , rem dx
+	mov ans,ax  ;avg
+    mov ax, 4c00h ; exit to operating system.
+    int 21h    
+	
+main endp 
+end main
+--------------------------------------------------------------------
+-----------------------comman elements
+.model small
+.stack 128
+.data
+    array1  dw 1,2,7,3,11,10,22,27,28,99
+    array2  dw 1,2,99,101,4,5,6,11,27,100
+    commonArray  dw 10 dup(?)
+    Count   DW 10    
+  
+.code
+main proc far
+; set segment registers:
+    mov ax, data
+    mov ds, ax
+    mov si, offset array1
+    mov di, offset array2
+    mov bx, offset commonArray 
+    mov cx, count
+    mov al,0 ; xor al,al 
+    
+loop1:
+    
+     mov dx ,[si]  
+     push cx  
+     mov cx, count
+     loop2: cmp dx, [di]
+            jne skip 
+            mov [bx],dx
+            inc al
+            inc bx
+            inc bx
+            skip: 
+            inc di
+            inc di
+            loop loop2
+            
+     pop cx
+     inc si
+     inc si 
+     mov di, offset array2
+     loop loop1 
+     
+mov ah, 4ch
+int 21h
+main endp
+end main
+----------------------------------------------------------------
+------------------------mutliply without mul
+.model small
+.stack 128
+.data
+NUMA Dw 5
+NUMB Dw 7
+ANS DW ? 
+.code
+main proc far
+    mov ax, data
+    mov ds, ax               
+    MOV CX,NUMA   
+    MOV BX,NUMB   
+    MOV AX,0      
+    L1:
+    ADD AX,BX         
+    LOOP L1     
+    MOV ANS,AX 
+    mov ax, 4c00h 
+    int 21h   
+main endp 
+e
